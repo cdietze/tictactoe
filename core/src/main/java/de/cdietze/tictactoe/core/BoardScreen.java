@@ -5,6 +5,7 @@ import de.cdietze.tictactoe.core.util.MyScreen;
 import de.cdietze.tictactoe.core.util.ScaledElement;
 import playn.scene.GroupLayer;
 import playn.scene.Layer;
+import playn.scene.Pointer;
 import pythagoras.f.Dimension;
 import pythagoras.f.IDimension;
 import tripleplay.ui.Root;
@@ -47,10 +48,19 @@ public class BoardScreen extends MyScreen {
             Iterator<Integer> colorGenerator = ColorUtils.uniqueColorGenerator(0f, .7f, .7f);
             for (int y = 0; y < 3; y++) {
                 for (int x = 0; x < 3; x++) {
+                    final int index = Position.toIndex(x, y);
                     GroupLayer fieldLayer = new GroupLayer();
-                    layer.add(fieldLayer);
+                    fieldLayer.setSize(1, 1);
+                    fieldLayer.events().connect(new Pointer.Listener() {
+                                                    @Override
+                                                    public void onStart(Pointer.Interaction iact) {
+                                                        System.out.println("click on " + index);
+                                                    }
+                                                }
+                    );
+                    layer.addAt(fieldLayer, x, y);
                     Layer solid = Layers.solid(colorGenerator.next(), 1, 1);
-                    fieldLayer.addAt(solid, x, y);
+                    fieldLayer.add(solid);
                 }
             }
         }

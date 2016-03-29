@@ -20,9 +20,11 @@ public class ScaledElement extends Element<ScaledElement> {
         return maxWidth / viewWidth;
     }
 
+    private final Layer worldLayer;
     private final IDimension worldSize;
 
     public ScaledElement(Layer layer, IDimension worldSize) {
+        worldLayer = layer;
         this.worldSize = worldSize;
         this.layer.add(layer);
     }
@@ -34,8 +36,13 @@ public class ScaledElement extends Element<ScaledElement> {
             public void layout(float left, float top, float width, float height) {
                 float ratio = worldSize.width() / worldSize.height();
                 float scale = maxScale(ratio, width, height);
-                layer.setTranslation(left + width * .5f, top + height * .5f);
-                layer.setScale(scale * width / worldSize.width());
+
+                layer.setTranslation(left, top);
+                layer.setSize(width, height);
+
+                worldLayer.setTranslation(width * .5f, height * .5f);
+                worldLayer.setScale(scale * width / worldSize.width());
+
             }
         };
     }
