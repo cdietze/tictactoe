@@ -1,0 +1,13 @@
+<module rename-to='tictactoe'>
+  <inherits name="com.google.common.collect.Collect"/>
+  <inherits name='playn.Scene'/>
+  <inherits name="tripleplay.TriplePlay"/>
+  <inherits name='Assets'/>
+
+  <source path='core'/>
+  <source path='html'/>
+
+  <public path="resources" />
+
+  <entry-point class='de.cdietze.tictactoe.html.HtmlMain'/>
+</module>
