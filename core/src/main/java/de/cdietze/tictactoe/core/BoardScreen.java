@@ -1,6 +1,7 @@
 package de.cdietze.tictactoe.core;
 
 import de.cdietze.tictactoe.core.util.ColorUtils;
+import de.cdietze.tictactoe.core.util.MyScreen;
 import de.cdietze.tictactoe.core.util.ScaledElement;
 import playn.scene.GroupLayer;
 import playn.scene.Layer;

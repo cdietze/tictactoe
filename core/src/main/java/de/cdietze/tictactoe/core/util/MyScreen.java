@@ -1,5 +1,6 @@
-package de.cdietze.tictactoe.core;
+package de.cdietze.tictactoe.core.util;
 
+import de.cdietze.tictactoe.core.MainGame;
 import playn.core.Game;
 import tripleplay.anim.Animator;
 import tripleplay.game.ScreenStack;
