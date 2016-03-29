@@ -36,13 +36,8 @@ public class ScaledElement extends Element<ScaledElement> {
             public void layout(float left, float top, float width, float height) {
                 float ratio = worldSize.width() / worldSize.height();
                 float scale = maxScale(ratio, width, height);
-
-                layer.setTranslation(left, top);
-                layer.setSize(width, height);
-
-                worldLayer.setTranslation(width * .5f, height * .5f);
+                worldLayer.setTranslation(left + width * .5f, top + height * .5f);
                 worldLayer.setScale(scale * width / worldSize.width());
-
             }
         };
     }

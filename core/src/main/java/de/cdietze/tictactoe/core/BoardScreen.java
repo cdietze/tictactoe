@@ -11,11 +11,9 @@ import playn.scene.Layer;
 import playn.scene.Pointer;
 import pythagoras.f.Dimension;
 import pythagoras.f.IDimension;
+import react.Function;
 import react.Slot;
-import tripleplay.ui.Root;
-import tripleplay.ui.SimpleStyles;
-import tripleplay.ui.Style;
-import tripleplay.ui.ToggleButton;
+import tripleplay.ui.*;
 import tripleplay.ui.layout.BorderLayout;
 import tripleplay.util.Layers;
 
@@ -32,7 +30,8 @@ public class BoardScreen extends MyScreen {
         super.wasAdded();
         IDimension viewSize = game.plat.graphics().viewSize;
 
-        Board board = new Board(new BoardState());
+        BoardState boardState = new BoardState();
+        Board board = new Board(boardState);
         ScaledElement boardElement = new ScaledElement(board.layer, new Dimension(3f, 3f));
         boardElement.setStyles(Style.BACKGROUND.is(tripleplay.ui.Background.blank().inset(20f)));
 
@@ -42,6 +41,13 @@ public class BoardScreen extends MyScreen {
         root.add(boardElement.setConstraint(BorderLayout.CENTER));
 
         root.add(new ToggleButton("Toggle").setConstraint(BorderLayout.SOUTH));
+        Label label = new Label().bindText(boardState.gameState.map(new Function<BoardState.GameState, String>() {
+            @Override
+            public String apply(BoardState.GameState gameState) {
+                return "GameState: " + gameState;
+            }
+        }));
+        root.add(label.setConstraint(BorderLayout.NORTH));
     }
 
     private final class Board {
