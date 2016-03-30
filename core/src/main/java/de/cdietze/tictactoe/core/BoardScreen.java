@@ -13,6 +13,7 @@ import pythagoras.f.Dimension;
 import pythagoras.f.IDimension;
 import react.Function;
 import react.Slot;
+import react.Values;
 import tripleplay.ui.*;
 import tripleplay.ui.layout.BorderLayout;
 import tripleplay.util.Layers;
@@ -31,6 +32,8 @@ public class BoardScreen extends MyScreen {
         IDimension viewSize = game.plat.graphics().viewSize;
 
         BoardState boardState = new BoardState();
+        attachAi(boardState);
+
         Board board = new Board(boardState);
         ScaledElement boardElement = new ScaledElement(board.layer, new Dimension(3f, 3f));
         boardElement.setStyles(Style.BACKGROUND.is(tripleplay.ui.Background.blank().inset(20f)));
@@ -40,7 +43,11 @@ public class BoardScreen extends MyScreen {
 
         root.add(boardElement.setConstraint(BorderLayout.CENTER));
 
-        root.add(new ToggleButton("Toggle").setConstraint(BorderLayout.SOUTH));
+        ToggleButton aiActiveForO = new ToggleButton("AI plays O");
+        aiActiveForO.selected().update(true);
+        aiActiveForO.selected().connectNotify(boardState.isOAi.slot());
+        root.add(aiActiveForO.setConstraint(BorderLayout.SOUTH));
+        
         Label label = new Label().bindText(boardState.gameState.map(new Function<BoardState.GameState, String>() {
             @Override
             public String apply(BoardState.GameState gameState) {
@@ -48,6 +55,25 @@ public class BoardScreen extends MyScreen {
             }
         }));
         root.add(label.setConstraint(BorderLayout.NORTH));
+    }
+
+    private void attachAi(final BoardState boardState) {
+        Values.and(boardState.isOAi, Values.not(boardState.isXToMove)).connectNotify(new Slot<Boolean>() {
+            @Override
+            public void onEmit(Boolean event) {
+                if (!event) return;
+                int state = Ai.emptyState;
+                for (int i = 0; i < 9; i++) {
+                    BoardState.FieldType fieldType = boardState.fieldValue(i).get();
+                    if (fieldType == BoardState.FieldType.EMPTY) continue;
+                    state = Ai.setField(state, i, fieldType == BoardState.FieldType.X);
+                }
+                Ai.EvalResult result = Ai.eval(state);
+                if (result.bestMoveIndex >= 0) {
+                    boardState.tryToMark(result.bestMoveIndex);
+                }
+            }
+        });
     }
 
     private final class Board {

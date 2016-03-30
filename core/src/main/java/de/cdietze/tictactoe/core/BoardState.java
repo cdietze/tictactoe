@@ -7,6 +7,7 @@ import react.ValueView;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static de.cdietze.tictactoe.core.Position.toIndex;
 
 public class BoardState {
@@ -24,9 +25,10 @@ public class BoardState {
         RUNNING, DRAW, X_WON, O_WON;
     }
 
-    private final List<Value<FieldType>> fields = new ArrayList<>();
+    public final List<Value<FieldType>> fields = new ArrayList<>();
     public final Value<Boolean> isXToMove = Value.create(true);
     public final Value<GameState> gameState = Value.create(GameState.RUNNING);
+    public final Value<Boolean> isOAi = Value.create(false);
 
     public BoardState() {
         for (int i = 0; i < Position.FIELD_COUNT; ++i) {
@@ -39,6 +41,7 @@ public class BoardState {
     }
 
     public void tryToMark(int fieldIndex) {
+        checkArgument(fieldIndex >= 0 && fieldIndex < 9);
         if (gameState.get() != GameState.RUNNING) return;
         if (fields.get(fieldIndex).get() != FieldType.EMPTY) return;
         fields.get(fieldIndex).update(isXToMove.get() ? FieldType.X : FieldType.O);
