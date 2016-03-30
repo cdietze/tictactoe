@@ -9,6 +9,11 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static de.cdietze.tictactoe.core.Position.toIndex;
 
+/**
+ * The board state is encoded in an int:
+ * The lowest 9 bits are a bitmask for the X pieces.
+ * The following 9 bits are a bitmask for the O pieces.
+ */
 public final class Ai {
 
     public static final int emptyState = 0;
