@@ -3,7 +3,6 @@ package de.cdietze.tictactoe.core;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class AiTest {
 
@@ -11,19 +10,19 @@ public class AiTest {
 
     @Test
     public void testStateToString() {
-        assertEquals(EMPTY_STATE_STRING, Ai.stateToString(Ai.emptyState));
+        assertThat(Ai.stateToString(Ai.emptyState)).isEqualTo(EMPTY_STATE_STRING);
     }
 
     @Test
     public void testStringToState() {
-        assertEquals(Ai.emptyState, Ai.stringToState(EMPTY_STATE_STRING));
+        assertThat(Ai.stringToState(EMPTY_STATE_STRING)).isEqualTo(Ai.emptyState);
     }
 
     @Test
     public void testGetFieldForEmptyState() {
         int state = Ai.emptyState;
         for (int i = 0; i < 9; i++) {
-            assertEquals(Ai.Field.EMPTY, Ai.getField(state, i));
+            assertThat(Ai.getField(state, i)).isEqualTo(Ai.Field.EMPTY);
         }
     }
 
@@ -31,7 +30,7 @@ public class AiTest {
     public void testGetSetX() {
         int state = Ai.emptyState;
         for (int i = 0; i < 9; i++) {
-            assertEquals(Ai.Field.X, Ai.getField(Ai.setField(state, i, true), i));
+            assertThat(Ai.getField(Ai.setField(state, i, true), i)).isEqualTo(Ai.Field.X);
         }
     }
 
@@ -39,61 +38,61 @@ public class AiTest {
     public void testGetSetO() {
         int state = Ai.emptyState;
         for (int i = 0; i < 9; i++) {
-            assertEquals(Ai.Field.O, Ai.getField(Ai.setField(state, i, false), i));
+            assertThat(Ai.getField(Ai.setField(state, i, false), i)).isEqualTo(Ai.Field.O);
         }
     }
 
     @Test
     public void testGetFieldOnEmptyState() {
         for (int i = 0; i < 9; i++) {
-            assertEquals(Ai.Field.EMPTY, Ai.getField(Ai.emptyState, i));
+            assertThat(Ai.getField(Ai.emptyState, i)).isEqualTo(Ai.Field.EMPTY);
         }
     }
 
     @Test
     public void testGetFieldOnFilledState() {
         int state = Ai.stringToState(".XO\nXO.\nO.X");
-        assertEquals(Ai.Field.EMPTY, Ai.getField(state, 0));
-        assertEquals(Ai.Field.X, Ai.getField(state, 1));
-        assertEquals(Ai.Field.O, Ai.getField(state, 2));
-        assertEquals(Ai.Field.X, Ai.getField(state, 3));
-        assertEquals(Ai.Field.O, Ai.getField(state, 4));
-        assertEquals(Ai.Field.EMPTY, Ai.getField(state, 5));
-        assertEquals(Ai.Field.O, Ai.getField(state, 6));
-        assertEquals(Ai.Field.EMPTY, Ai.getField(state, 7));
-        assertEquals(Ai.Field.X, Ai.getField(state, 8));
+        assertThat(Ai.getField(state, 0)).isEqualTo(Ai.Field.EMPTY);
+        assertThat(Ai.getField(state, 1)).isEqualTo(Ai.Field.X);
+        assertThat(Ai.getField(state, 2)).isEqualTo(Ai.Field.O);
+        assertThat(Ai.getField(state, 3)).isEqualTo(Ai.Field.X);
+        assertThat(Ai.getField(state, 4)).isEqualTo(Ai.Field.O);
+        assertThat(Ai.getField(state, 5)).isEqualTo(Ai.Field.EMPTY);
+        assertThat(Ai.getField(state, 6)).isEqualTo(Ai.Field.O);
+        assertThat(Ai.getField(state, 7)).isEqualTo(Ai.Field.EMPTY);
+        assertThat(Ai.getField(state, 8)).isEqualTo(Ai.Field.X);
     }
 
     @Test
     public void hasXWon() {
-        assertEquals(false, Ai.hasXWon(Ai.emptyState));
-        assertEquals(true, Ai.hasXWon(Ai.stringToState("XXX......")));
-        assertEquals(false, Ai.hasXWon(Ai.stringToState(".XXX.....")));
-        assertEquals(true, Ai.hasXWon(Ai.stringToState("X..X..X..")));
-        assertEquals(true, Ai.hasXWon(Ai.stringToState("X...X...X")));
+        assertThat(Ai.hasXWon(Ai.emptyState)).isFalse();
+        assertThat(Ai.hasXWon(Ai.stringToState("XXX......"))).isTrue();
+        assertThat(Ai.hasXWon(Ai.stringToState(".XXX....."))).isFalse();
+        assertThat(Ai.hasXWon(Ai.stringToState("X..X..X.."))).isTrue();
+        assertThat(Ai.hasXWon(Ai.stringToState("X...X...X"))).isTrue();
     }
 
     @Test
     public void hasOWon() {
-        assertEquals(false, Ai.hasOWon(Ai.emptyState));
-        assertEquals(true, Ai.hasOWon(Ai.stringToState("OOO......")));
-        assertEquals(false, Ai.hasOWon(Ai.stringToState(".OOO.....")));
-        assertEquals(true, Ai.hasOWon(Ai.stringToState("O..O..O..")));
-        assertEquals(true, Ai.hasOWon(Ai.stringToState("O...O...O")));
+        assertThat(Ai.hasOWon(Ai.emptyState)).isFalse();
+        assertThat(Ai.hasOWon(Ai.stringToState("OOO......"))).isTrue();
+        assertThat(Ai.hasOWon(Ai.stringToState(".OOO....."))).isFalse();
+        assertThat(Ai.hasOWon(Ai.stringToState("O..O..O.."))).isTrue();
+        assertThat(Ai.hasOWon(Ai.stringToState("O...O...O"))).isTrue();
     }
 
     @Test
     public void testIsDraw() {
-        assertEquals(false, Ai.isDraw(Ai.emptyState));
-        assertEquals(false, Ai.isDraw(Ai.stringToState("XXXOOOXX.")));
-        assertEquals(true, Ai.isDraw(Ai.stringToState("XXXOOOXXX")));
+        assertThat(Ai.isDraw(Ai.emptyState)).isFalse();
+        assertThat(Ai.isDraw(Ai.stringToState("XXXOOOXX."))).isFalse();
+        assertThat(Ai.isDraw(Ai.stringToState("XXXOOOXXX"))).isTrue();
     }
 
     @Test
     public void testIsXToMove() {
-        assertEquals(true, Ai.isXToMove(Ai.emptyState));
-        assertEquals(false, Ai.isXToMove(Ai.stringToState("X........")));
-        assertEquals(true, Ai.isXToMove(Ai.stringToState("XO.......")));
+        assertThat(Ai.isXToMove(Ai.emptyState)).isTrue();
+        assertThat(Ai.isXToMove(Ai.stringToState("X........"))).isFalse();
+        assertThat(Ai.isXToMove(Ai.stringToState("XO......."))).isTrue();
     }
 
     @Test
@@ -105,21 +104,21 @@ public class AiTest {
 
     @Test
     public void shouldWinInOneWithX() {
-        assertEquals(Ai.index(0, 2), Ai.eval(Ai.stringToState("XO.XO....")).bestMoveIndex);
+        assertThat(Ai.eval(Ai.stringToState("XO.XO....")).bestMoveIndex).isEqualTo(Ai.index(0, 2));
     }
 
     @Test
     public void winInOneWithO() {
-        assertEquals(Ai.index(1, 2), Ai.eval(Ai.stringToState("XO.XO...X")).bestMoveIndex);
+        assertThat(Ai.eval(Ai.stringToState("XO.XO...X")).bestMoveIndex).isEqualTo(Ai.index(1, 2));
     }
 
     @Test
     public void shouldPreventInOneWithX() {
-        assertEquals(Ai.index(0, 2), Ai.eval(Ai.stringToState("OXXO.....")).bestMoveIndex);
+        assertThat(Ai.eval(Ai.stringToState("OXXO.....")).bestMoveIndex).isEqualTo(Ai.index(0, 2));
     }
 
     @Test
     public void shouldPreventInOneWithO() {
-        assertEquals(Ai.index(0, 2), Ai.eval(Ai.stringToState("XO.|X..|...")).bestMoveIndex);
+        assertThat(Ai.eval(Ai.stringToState("XO.|X..|...")).bestMoveIndex).isEqualTo(Ai.index(0, 2));
     }
 }
