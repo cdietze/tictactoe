@@ -64,7 +64,7 @@ public class AiTest {
     }
 
     @Test
-    public void hasXWon() {
+    public void testHasXWon() {
         assertThat(Ai.hasXWon(Ai.emptyState)).isFalse();
         assertThat(Ai.hasXWon(Ai.stringToState("XXX......"))).isTrue();
         assertThat(Ai.hasXWon(Ai.stringToState(".XXX....."))).isFalse();
@@ -73,7 +73,7 @@ public class AiTest {
     }
 
     @Test
-    public void hasOWon() {
+    public void testHasOWon() {
         assertThat(Ai.hasOWon(Ai.emptyState)).isFalse();
         assertThat(Ai.hasOWon(Ai.stringToState("OOO......"))).isTrue();
         assertThat(Ai.hasOWon(Ai.stringToState(".OOO....."))).isFalse();
@@ -113,12 +113,12 @@ public class AiTest {
     }
 
     @Test
-    public void shouldPreventInOneWithX() {
+    public void shouldPreventLossInOneWithX() {
         assertThat(Ai.eval(Ai.stringToState("OXXO.....")).bestMoveIndex).isEqualTo(Ai.index(0, 2));
     }
 
     @Test
-    public void shouldPreventInOneWithO() {
+    public void shouldPreventLossInOneWithO() {
         assertThat(Ai.eval(Ai.stringToState("XO.|X..|...")).bestMoveIndex).isEqualTo(Ai.index(0, 2));
     }
 }
