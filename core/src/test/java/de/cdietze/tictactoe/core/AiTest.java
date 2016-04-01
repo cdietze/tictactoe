@@ -1,8 +1,8 @@
 package de.cdietze.tictactoe.core;
 
-import org.junit.Assert;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 public class AiTest {
@@ -98,20 +98,28 @@ public class AiTest {
 
     @Test
     public void testEvalRating() {
-        assertEquals(Ai.EvalResult.DRAW, Ai.eval(Ai.stringToState("XOXXOOOXX")).rating);
-        assertEquals(Ai.EvalResult.X_WINS, Ai.eval(Ai.stringToState("XO.XO.X..")).rating);
-        assertEquals(Ai.EvalResult.O_WINS, Ai.eval(Ai.stringToState("O.XOXXO..")).rating);
+        assertThat(Ai.eval(Ai.stringToState("XOXXOOOXX")).rating).isZero();
+        assertThat(Ai.eval(Ai.stringToState("XO.XO.X..")).rating).isLessThan(0);
+        assertThat(Ai.eval(Ai.stringToState("O.XOXXO..")).rating).isLessThan(0);
     }
 
     @Test
-    public void testEvalMoveForX() {
-        Assert.assertTrue(Ai.eval(Ai.stringToState("XO.XO....")).rating > 0);
+    public void shouldWinInOneWithX() {
         assertEquals(Ai.index(0, 2), Ai.eval(Ai.stringToState("XO.XO....")).bestMoveIndex);
     }
 
     @Test
-    public void testEvalMoveForO() {
-        Assert.assertTrue(Ai.eval(Ai.stringToState("XO.XO...X")).rating > 0);
+    public void winInOneWithO() {
         assertEquals(Ai.index(1, 2), Ai.eval(Ai.stringToState("XO.XO...X")).bestMoveIndex);
+    }
+
+    @Test
+    public void shouldPreventInOneWithX() {
+        assertEquals(Ai.index(0, 2), Ai.eval(Ai.stringToState("OXXO.....")).bestMoveIndex);
+    }
+
+    @Test
+    public void shouldPreventInOneWithO() {
+        assertEquals(Ai.index(0, 2), Ai.eval(Ai.stringToState("XO.|X..|...")).bestMoveIndex);
     }
 }

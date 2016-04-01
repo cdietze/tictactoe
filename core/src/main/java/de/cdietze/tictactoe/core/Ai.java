@@ -1,12 +1,13 @@
 package de.cdietze.tictactoe.core;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Ordering;
 import com.google.common.primitives.Ints;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static de.cdietze.tictactoe.core.Position.toIndex;
 
 /**
@@ -44,26 +45,33 @@ public final class Ai {
         return eval(state, isXToMove(state), 0);
     }
 
-    public static EvalResult eval(int state, boolean isXToMove, int depth) {
-        if (hasXWon(state)) return EvalResult.create(EvalResult.X_WINS);
-        if (hasOWon(state)) return EvalResult.create(EvalResult.O_WINS);
-        if (isDraw(state)) return EvalResult.create(EvalResult.DRAW);
+    private static EvalResult eval(int state, boolean isXToMove, int depth) {
+        // Actually only the player that just moved can have one, so there is room for optimization here
+        if (hasXWon(state)) return EvalResult.create(isXToMove ? 100 : -100, -1, depth);
+        if (hasOWon(state)) return EvalResult.create(isXToMove ? -100 : 100, -1, depth);
+        if (isDraw(state)) return EvalResult.create(0, -1, depth);
         int occupiedFieldMask = (state >> 9) | state;
-        EvalResult bestResult = null;
+        List<EvalResult> results = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
             if (isBitSet(occupiedFieldMask, i)) continue;
             int newState = setField(state, i, isXToMove);
-            EvalResult result = eval(newState, !isXToMove, depth + 1);
-            int resultRating = result.rating;
-            if (!isXToMove) resultRating *= -1;
-            final int depthAdjustment = 1;
-            resultRating -= depthAdjustment;
-            if (bestResult == null || resultRating >= bestResult.rating) {
-                bestResult = EvalResult.create(resultRating, i);
-            }
+            EvalResult result = eval(newState, !isXToMove, depth + 1).negateRating().moveIndex(i);
+            results.add(result);
         }
-        return checkNotNull(bestResult, "No valid move found");
+        EvalResult bestResult = resultOrdering.max(results);
+        return bestResult;
     }
+
+    private static Ordering<EvalResult> resultOrdering = new Ordering<EvalResult>() {
+        @Override
+        public int compare(EvalResult left, EvalResult right) {
+            return ComparisonChain.start() //
+                    .compare(left.rating, right.rating) //
+                    // If we're about to win, favor fewer moves and vice versa
+                    .compare(left.rating > 0 ? -left.depth : left.depth, right.rating > 0 ? -right.depth : right.depth) //
+                    .result();
+        }
+    };
 
     public static boolean isXToMove(int state) {
         int xCount = Integer.bitCount(state & NINE_BITS);
@@ -188,28 +196,26 @@ public final class Ai {
     }
 
     public static class EvalResult {
-        public final static int DRAW = 0;
-        public final static int X_WINS = 100;
-        public final static int O_WINS = -100;
-
         public final int rating;
         public final int bestMoveIndex;
+        public final int depth;
 
-        private EvalResult(int rating, int bestMoveIndex) {
+        private EvalResult(int rating, int bestMoveIndex, int depth) {
             this.rating = rating;
             this.bestMoveIndex = bestMoveIndex;
+            this.depth = depth;
         }
 
-        public static EvalResult create(int rating, int bestMoveIndex) {
-            return new EvalResult(rating, bestMoveIndex);
+        public static EvalResult create(int rating, int bestMoveIndex, int depth) {
+            return new EvalResult(rating, bestMoveIndex, depth);
         }
 
-        public static EvalResult create(int rating) {
-            return new EvalResult(rating, -1);
+        public EvalResult negateRating() {
+            return create(-rating, bestMoveIndex, depth);
         }
 
-        public EvalResult negate() {
-            return create(-rating, bestMoveIndex);
+        public EvalResult moveIndex(int moveIndex) {
+            return create(rating, moveIndex, depth);
         }
 
         @Override
@@ -217,6 +223,7 @@ public final class Ai {
             return "EvalResult{" +
                     "rating=" + rating +
                     ", bestMoveIndex=" + bestMoveIndex +
+                    ", depth=" + depth +
                     '}';
         }
     }
