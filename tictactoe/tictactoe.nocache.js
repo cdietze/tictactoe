@@ -334,7 +334,7 @@ function tictactoe(){
     }
     var strongName;
     try {
-      strongName = '0D27912E3DB5A6599BC3384862A0AC61';
+      strongName = '9DFB772D86996F387FE9C0873FF1DDCA';
       var idx = strongName.indexOf(':');
       if (idx != -1) {
         softPermutationId = parseInt(strongName.substring(idx + 1), 10);
