@@ -11,10 +11,10 @@ import playn.scene.Layer;
 import playn.scene.Pointer;
 import pythagoras.f.Dimension;
 import pythagoras.f.IDimension;
-import react.Function;
 import react.Slot;
 import react.Values;
 import tripleplay.ui.*;
+import tripleplay.ui.layout.AxisLayout;
 import tripleplay.ui.layout.BorderLayout;
 import tripleplay.util.Layers;
 
@@ -31,7 +31,8 @@ public class BoardScreen extends MyScreen {
         super.wasAdded();
         IDimension viewSize = game.plat.graphics().viewSize;
 
-        BoardState boardState = new BoardState();
+        final BoardState boardState = new BoardState();
+        boardState.isOAi.update(true);
         attachAi(boardState);
 
         Board board = new Board(boardState);
@@ -43,18 +44,40 @@ public class BoardScreen extends MyScreen {
 
         root.add(boardElement.setConstraint(BorderLayout.CENTER));
 
-        ToggleButton aiActiveForO = new ToggleButton("AI plays O");
-        aiActiveForO.selected().update(true);
-        aiActiveForO.selected().connectNotify(boardState.isOAi.slot());
-        root.add(aiActiveForO.setConstraint(BorderLayout.SOUTH));
-        
-        Label label = new Label().bindText(boardState.gameState.map(new Function<BoardState.GameState, String>() {
+        boardState.gameState.connectNotify(new Slot<BoardState.GameState>() {
             @Override
-            public String apply(BoardState.GameState gameState) {
-                return "GameState: " + gameState;
+            public void onEmit(BoardState.GameState gameState) {
+                if (gameState == BoardState.GameState.RUNNING) return;
+                createDialog(createGameOverPanel(boardState)).useShade().slideTopDown().duration(1000f).display();
+            }
+        });
+    }
+
+    private Group createGameOverPanel(BoardState boardState) {
+        /** Use the colors from {@link SimpleStyles} */
+        int bgColor = 0xFFCCCCCC, ulColor = 0xFFEEEEEE, brColor = 0xFFAAAAAA;
+        Group group = new Group(AxisLayout.vertical()).setStyles(Style.BACKGROUND.is(Background.roundRect(plat.graphics(), bgColor, 5, ulColor, 2).inset(20f)));
+        group.add(new Label(getGameOverLabel(boardState.gameState.get())));
+        group.add(new Button("New Game").onClick(new Slot<Button>() {
+            @Override
+            public void onEmit(Button event) {
+                game.screens.replace(new BoardScreen(game));
             }
         }));
-        root.add(label.setConstraint(BorderLayout.NORTH));
+        return group;
+    }
+
+    private String getGameOverLabel(BoardState.GameState gameState) {
+        switch (gameState) {
+            case DRAW:
+                return "It's a draw";
+            case O_WON:
+                return "O has won";
+            case X_WON:
+                return "X has won";
+            default:
+                return "";
+        }
     }
 
     private void attachAi(final BoardState boardState) {
@@ -90,7 +113,6 @@ public class BoardScreen extends MyScreen {
                     fieldLayer.events().connect(new Pointer.Listener() {
                                                     @Override
                                                     public void onStart(Pointer.Interaction iact) {
-                                                        System.out.println("click on " + fieldIndex);
                                                         boardState.tryToMark(fieldIndex);
                                                     }
                                                 }
