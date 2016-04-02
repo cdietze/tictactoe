@@ -5,6 +5,7 @@ import de.cdietze.tictactoe.core.util.MyScreen;
 import de.cdietze.tictactoe.core.util.ScaledElement;
 import playn.core.Canvas;
 import playn.core.Image;
+import playn.core.Sound;
 import playn.scene.GroupLayer;
 import playn.scene.ImageLayer;
 import playn.scene.Layer;
@@ -49,6 +50,7 @@ public class BoardScreen extends MyScreen {
             public void onEmit(BoardState.GameState gameState) {
                 if (gameState == BoardState.GameState.RUNNING) return;
                 createDialog(createGameOverPanel(boardState)).useShade().slideTopDown().duration(1000f).display();
+                gameOver.play();
             }
         });
     }
@@ -113,6 +115,7 @@ public class BoardScreen extends MyScreen {
                     fieldLayer.events().connect(new Pointer.Listener() {
                                                     @Override
                                                     public void onStart(Pointer.Interaction iact) {
+                                                        click1.play();
                                                         boardState.tryToMark(fieldIndex);
                                                     }
                                                 }
@@ -172,4 +175,8 @@ public class BoardScreen extends MyScreen {
             return canvas.image;
         }
     }
+
+    private Sound click1 = plat.assets().getSound("sounds/click1");
+    private Sound click2 = plat.assets().getSound("sounds/click2");
+    private Sound gameOver = plat.assets().getSound("sounds/game_over");
 }
