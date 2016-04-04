@@ -1,8 +1,8 @@
 package de.cdietze.tictactoe.core;
 
-import de.cdietze.tictactoe.core.util.ColorUtils;
-import de.cdietze.tictactoe.core.util.MyScreen;
-import de.cdietze.tictactoe.core.util.ScaledElement;
+import de.cdietze.playn_util.ColorUtils;
+import de.cdietze.playn_util.ScaledElement;
+import de.cdietze.playn_util.Screen;
 import playn.core.Canvas;
 import playn.core.Image;
 import playn.core.Sound;
@@ -21,16 +21,19 @@ import tripleplay.util.Layers;
 
 import java.util.Iterator;
 
-public class BoardScreen extends MyScreen {
+public class BoardScreen extends Screen {
+
+    private final MainGame game;
 
     public BoardScreen(MainGame game) {
         super(game);
+        this.game = game;
     }
 
     @Override
     public void wasAdded() {
         super.wasAdded();
-        IDimension viewSize = game.plat.graphics().viewSize;
+        IDimension viewSize = plat.graphics().viewSize;
 
         final BoardState boardState = new BoardState();
         boardState.isOAi.update(true);
@@ -40,7 +43,7 @@ public class BoardScreen extends MyScreen {
         ScaledElement boardElement = new ScaledElement(board.layer, new Dimension(3f, 3f));
         boardElement.setStyles(Style.BACKGROUND.is(tripleplay.ui.Background.blank().inset(20f)));
 
-        Root root = iface.createRoot(new BorderLayout(), SimpleStyles.newSheet(game.plat.graphics()), layer);
+        Root root = iface.createRoot(new BorderLayout(), SimpleStyles.newSheet(plat.graphics()), layer);
         root.setSize(viewSize);
 
         root.add(boardElement.setConstraint(BorderLayout.CENTER));
