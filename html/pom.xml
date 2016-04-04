@@ -78,6 +78,13 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>de.cdietze.playn-util</groupId>
+      <artifactId>playn-util</artifactId>
+      <version>${playn-util.version}</version>
+      <classifier>sources</classifier>
+    </dependency>
+
     <!-- Uncomment these if you want to deploy to Google App Engine -->
     <!--
     <dependency>

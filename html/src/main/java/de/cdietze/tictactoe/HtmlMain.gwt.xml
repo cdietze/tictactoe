@@ -2,6 +2,7 @@
   <inherits name="com.google.common.collect.Collect"/>
   <inherits name='playn.Scene'/>
   <inherits name="tripleplay.TriplePlay"/>
+  <inherits name="de.cdietze.PlaynUtil" />
   <inherits name='Assets'/>
 
   <source path='core'/>

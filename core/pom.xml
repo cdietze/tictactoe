@@ -26,7 +26,7 @@
     <dependency>
       <groupId>de.cdietze.playn-util</groupId>
       <artifactId>playn-util</artifactId>
-      <version>0.2-SNAPSHOT</version>
+      <version>${playn-util.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>

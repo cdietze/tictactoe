@@ -14,6 +14,7 @@
 
   <properties>
     <playn.version>2.0-rc3</playn.version>
+    <playn-util.version>0.2-SNAPSHOT</playn-util.version>
     <guava.version>19.0</guava.version>
   </properties>
 
