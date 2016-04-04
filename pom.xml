@@ -42,6 +42,7 @@
     </profile>
   </profiles>
   <modules>
+    <module>playn-util</module>
     <module>assets</module>
     <module>core</module>
   </modules>
